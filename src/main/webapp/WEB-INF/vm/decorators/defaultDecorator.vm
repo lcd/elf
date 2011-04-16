@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="shortcut icon" href="${application.elfMetas.blogUrl}/favicon.ico" />
+<title>$title · ${application.elfMetas.blogName}-ELF</title>
+<link href="${application.elfMetas.blogUrl}/css/default.css" rel="stylesheet" type="text/css" media="all" />
+<link href="${application.elfMetas.blogUrl}/css/admin.css" rel="stylesheet" type="text/css" media="all" />
+<script src="${application.elfMetas.blogUrl}/js/jquery-1.4.2.min.js" type="text/javascript" language="javascript"></script>
+<script src="${application.elfMetas.blogUrl}/js/jquery.tipsy.js" type="text/javascript" language="javascript"></script>
+<script src="${application.elfMetas.blogUrl}/js/jquery.cookie.js" type="text/javascript" language="javascript"></script>
+<script src="${application.elfMetas.blogUrl}/js/jquery.url.js" type="text/javascript" language="javascript"></script>
+<script src="${application.elfMetas.blogUrl}/js/elfDialog.js" type="text/javascript" language="javascript"></script>
+<script type="text/javascript" language="javascript">
+$(function(){
+	disSideBarStatus();
+	
+	$(".sideBarTitle").click(function(){
+		var status = $(this).data("status");
+		if(!status || status == "opened"){
+			$(this).children(".sideBarTitleFlag").text("+");
+			$(this).next(".sideBarBody").slideUp(200);
+			$(this).nextAll(".sideBarTitle:first").css({"border-top":"1px solid #fff"});
+			status = "closed";
+		}else{
+			$(this).children(".sideBarTitleFlag").text("-");
+			$(this).next(".sideBarBody").slideDown(200);
+			$(this).nextAll(".sideBarTitle:first").css({"border-top":"1px solid #d2d2d2"});
+			status = "opened";
+		}
+		$(this).data("status",status);
+	});
+	
+	$(".sideBarBody li a").click(function(){
+		setSideBarStatusCookie($(this).text());
+		disSideBarStatus();
+	});
+	
+	//设置sideBar状态cookie
+	function setSideBarStatusCookie(cookieValue){
+		jQuery.cookie("sideBarStatusCookie",cookieValue);
+	}
+	
+	//渲染sideBar状态,
+	function disSideBarStatus(){
+		$(".sideBarBody li").removeClass("current");
+		var urlPath = jQuery.url.attr("path");
+		if($(".sideBarBody li a[href*='"+urlPath+"']").length > 0){
+			$(".sideBarBody li a[href*='"+urlPath+"']").parent().addClass("current");
+			setSideBarStatusCookie($(".sideBarBody li a[href*='"+urlPath+"']").text());
+		}else{
+			var currentCookie = jQuery.cookie("sideBarStatusCookie");
+    		if(!currentCookie){
+    			$(".sideBarBody li:first").addClass("current");
+    		}else{
+    			$(".sideBarBody li a:contains('" + currentCookie + "')").parent().addClass("current");
+    		}
+		}
+	}
+	
+	//widget交互
+	$(".widgetTitle")
+    	.hover(function(){
+			var status = $(this).data("status");
+			if(!status || status == "opened"){
+    			$(this).children(".widgetToggle").text("收起").show();
+			}else{
+				$(this).children(".widgetToggle").text("展开").show();
+			}
+    	},function(){
+			$(this).children(".widgetToggle").hide();
+    	})
+		.click(function(){
+			var status = $(this).data("status");
+    		if(!status || status == "opened"){
+    			$(this).next(".widgetBody").slideUp(200,function(){
+					$(this).prev(".widgetTitle").children(".widgetToggle").text("展开");
+				});
+    			status = "closed";
+    		}else{
+    			$(this).next(".widgetBody").slideDown(200,function(){
+					$(this).prev(".widgetTitle").children(".widgetToggle").text("收起");
+				});
+    			status = "opened";
+    		}
+    		$(this).data("status",status);
+		});
+		
+	//sideBarMorePannel交互
+	$(".sideBarMorePannelToggle a").click(function(){
+		var status = $(this).data("status");
+		if(!status || status == "closed"){
+			$(this).children(".flag").text("-");
+			$(this).parent(".sideBarMorePannelToggle").next(".sideBarMorePannelContent").slideDown(200);
+			status = "opened";
+		}else{
+			$(this).children(".flag").text("+");
+			$(this).parent(".sideBarMorePannelToggle").next(".sideBarMorePannelContent").slideUp(200);
+			status = "closed";
+		}
+		$(this).data("status",status).blur();
+	});
+	
+	//如果需要插入行选择器
+	$(".elfTable.withRowSelector tr").each(function(){
+		if($(this).children("th").length > 0){
+			$(this).children("th").first().before('<th width="20"><input type="checkbox" class="elfTableRowSelector"/></th>');
+		}else if($(this).children("td").length > 0){
+			$(this).children("td").first().before('<td width="20"><input type="checkbox" class="elfTableRowSelector"/></td>');
+		}
+	})
+	//elfTable隔行变色
+	$(".elfTable tbody tr:odd").addClass("rowOdd");
+	//elfTable鼠标经过行交互
+	$(".elfTable tbody tr").hover(function(){
+		$(this).addClass("rowHover").find(".tableOprator").css("visibility","visible");
+	},function(){
+		$(this).removeClass("rowHover").find(".tableOprator").css("visibility","hidden");
+	});
+	//全选/全不选
+	$(".elfTable th input[type=checkbox].elfTableRowSelector").change(function(){
+		$(".elfTable td input[type=checkbox].elfTableRowSelector")
+			.attr("checked",$(this).attr("checked"))
+			.each(function(){
+				if($(this).attr("checked")){
+					$(this).parents(".elfTable tbody tr").addClass("rowSelected");
+				}else{
+					$(this).parents(".elfTable tbody tr").removeClass("rowSelected");
+				}
+			});
+			$(".elfTable th input[type=checkbox].elfTableRowSelector").attr("checked",$(this).attr("checked"));
+	});
+	//单击复选框选中行
+	$(".elfTable td input[type=checkbox].elfTableRowSelector").change(function(){
+		if($(this).attr("checked")){
+			$(this).parents(".elfTable tbody tr").addClass("rowSelected");
+		}else{
+			$(this).parents(".elfTable tbody tr").removeClass("rowSelected");
+		}
+		//return false;//阻止事件冒泡
+	});
+	//单击行选中,在chrome下不能阻止事件冒泡，此功能先取消
+	/*$(".elfTable tbody tr").click(function(){
+		if(!$(this).hasClass("rowSelected")){
+			$(this).addClass("rowSelected").find("input[type=checkbox].elfTableRowSelector").attr("checked",true);
+		}else{
+			$(this).removeClass("rowSelected").find("input[type=checkbox].elfTableRowSelector").attr("checked",false);
+		}
+	});*/
+	
+	//表格数据过滤条件交互
+	$(".elfTableFilterContent").data("status","opened");
+	$(".elfTableFilterToggle").click(function(){
+		if($(".elfTableFilterContent").data("status") == "closed"){
+			$(this).text("∧ 隐藏过滤条件").parent().find(".elfTableFilterContent").slideDown(200);
+			$(".elfTableFilterContent").data("status","opened");
+		}else{
+			$(this).text("∨ 显示过滤条件").parent().find(".elfTableFilterContent").slideUp(200);
+			$(".elfTableFilterContent").data("status","closed");
+		}
+	});
+	
+    //处理一般的（struts从Input返回的）错误信息
+    #if($!errorDescription.size()>0)
+    	var str = "";
+    	#foreach($error in $errorDescription)
+    		str += "●  $error";
+			#if($!errorDescription.size() > $velocityCount)
+				str += "<br/>";
+			#end
+    	#end
+    	ElfDialog.alert(str);
+	#end	
+});
+
+//处理ajax返回的错误信息
+function handleAjaxError(obj){
+	if(obj.error){
+		var str = "";
+		jQuery.each(obj.error,function(){
+			str += (this+"<br/>");
+		});
+		ElfDialog.alert(str);
+		return false;
+	}
+	return true;
+}
+
+
+</script>
+$head
+</head>
+<body>
+	<div class="elfWarp">
+        <div class="elfHead clearfix">
+            <h1 class="siteName f_l"><a href="${application.elfMetas.blogUrl}">${application.elfMetas.blogName}</a></h1>
+			<p class="f_r userInfo">欢迎：$vu.sessionUser($session).loginName <a href="${application.elfMetas.blogUrl}/logout.jhtml">退出</a></p>
+		</div>
+        <div class="elfBody clearfix">
+			<div class="elfSideBar">
+				<ul class="sideBarUnit">
+                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>博客管理</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/index.jhtml">博客管理</a></li>
+						</ul>
+					</li>
+				</ul>
+				
+				<ul class="sideBarUnit">
+                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>文章</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/articleList.jhtml">文章列表</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/newArticle.jhtml">写文章</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/categoryManager.jhtml">文章分类</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/tagManager.jhtml">文章标签</a></li>
+						</ul>
+					</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>媒体</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li><a href="">媒体库</a></li>
+							<li><a href="">添加多媒体文件</a></li>
+						</ul>
+					</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>页面</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li><a href="">页面列表</a></li>
+							<li><a href="">添加页面</a></li>
+						</ul>
+					</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>评论</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li><a href="">评论管理</a></li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="sideBarUnit">
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>外观</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li><a href="">主题</a></li>
+							<li><a href="">小工具</a></li>
+							<li><a href="">背景</a></li>
+							<li><a href="">顶部图片</a></li>
+						</ul>
+					</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>设置</li>
+					<li class="sideBarBody">
+                        <ul>
+							<li><a href="">常规</a></li>
+							<li><a href="">撰写</a></li>
+							<li><a href="">阅读</a></li>
+							<li><a href="">评论</a></li>
+							<li><a href="">媒体</a></li>
+							<li><a href="">链接形式</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="elfContent">
+				$body
+			</div>
+		</div>
+		<div class="elfFooter clearfix">
+			<p class="f_l">感谢使用ELF进行创作！</p>
+			<p class="f_r">代码如诗</p>
+		</div>
+	</div>
+	
+</body>
+</html>
