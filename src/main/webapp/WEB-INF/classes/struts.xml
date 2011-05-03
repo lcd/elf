@@ -87,6 +87,15 @@
     		<result name="success" type="redirect">/admin/tagManager.jhtml</result>
     		<result name="input" type="velocity">/WEB-INF/vm/tag/tagManager.vm</result>
     	</action>
+    	<!-- 用户设置中心页面 -->
+    	<action name="userSettings" class="com.elf.view.admin.UserAction" method="userSettings">
+    		<result name="success" type="velocity">/WEB-INF/vm/user/userSettings.vm</result>
+    	</action>
+    	<!-- 修改密码 -->
+    	<action name="modifyPassword" class="com.elf.view.admin.UserAction" method="modifyPassword">
+    		<result name="input" type="redirect">/admin/userSettings.jhtml</result>
+    		<result name="success" type="redirect">/admin/userSettings.jhtml</result>
+    	</action>
     </package>
     
     <!-- ajax请求 -->

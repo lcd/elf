@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.elf.entities.User;
-import com.elf.view.www.UserAction;
+import com.elf.view.ElfBaseAction;
 
 /**
  * vm工具
@@ -103,7 +103,7 @@ public class VmUtil {
      * @return
      */
     public User sessionUser(HttpSession session){
-        return (User) session.getAttribute(UserAction.LOGIN_SESSION_NAME);
+        return (User) session.getAttribute(ElfBaseAction.LOGIN_SESSION_NAME);
     }
     
     /**

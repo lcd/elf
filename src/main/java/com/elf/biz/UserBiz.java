@@ -35,9 +35,19 @@ public interface UserBiz {
     /**
      * 登录
      * @param user
+     * @param pwdMd5ed 表示密码是否被MD5加密过
      * @return 
      * @throws LoginException 
      */
-    User login(User user) throws LoginException;
+    User login(User user, boolean pwdMd5ed) throws LoginException;
+
+	/**
+	 * 修改用户密码
+	 * 如果用户是第一次修改密码,将把用户状态从"ORIGINAL_PASSWORD"更新到"ACTIVE"
+	 * @param user 要修改密码的用户
+	 * @param newPwd 新密码
+	 * @return 更新后的对象
+	 */
+    User modifyPassword(User user, String newPwd);
 
 }

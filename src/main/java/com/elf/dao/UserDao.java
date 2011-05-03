@@ -32,4 +32,11 @@ public interface UserDao {
      */
     User selectSingleUser(User user);
 
+	/**
+	 * 修改密码，只涉及到userId，password和status字段的更新
+	 * @param user
+	 * @return 修改后的对象
+	 */
+    User modifyPassword(User user);
+
 }

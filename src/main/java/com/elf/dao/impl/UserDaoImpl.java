@@ -24,4 +24,10 @@ public class UserDaoImpl extends SqlMapClientDaoSupport implements UserDao {
         return (User) getSqlMapClientTemplate().queryForObject("users.selectSingleUser", user);
     }
 
+	@Override
+	public User modifyPassword(User user) {
+		getSqlMapClientTemplate().update("users.modifyPassword", user);
+		return selectSingleUser(user);
+	}
+
 }

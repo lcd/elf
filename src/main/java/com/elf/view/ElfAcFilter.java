@@ -71,17 +71,22 @@ public class ElfAcFilter implements Filter {
         }
 
         // 尝试从session中取登录信息
-        User loginedUser = (User) request.getSession().getAttribute(UserAction.LOGIN_SESSION_NAME);
+        User loginedUser = null;
+        Object o = request.getSession().getAttribute(ElfBaseAction.LOGIN_SESSION_NAME);
+        if(o != null && o instanceof User){
+        	loginedUser = (User) request.getSession().getAttribute(ElfBaseAction.LOGIN_SESSION_NAME);
+        }
         if (loginedUser == null) {
             // session中没有登录信息，尝试从cookie中取登录信息
-            Cookie loginCookie = CookieUtil.getBase64Cookie(request, UserAction.REMEMBER_ME_COOKIE_NAME);
+            Cookie loginCookie = CookieUtil.getBase64Cookie(request, ElfBaseAction.REMEMBER_ME_COOKIE_NAME);
             if (loginCookie != null) {
                 try {
                     User userInCookie = loginWithCookie(loginCookie);
-                    request.getSession().setAttribute(UserAction.LOGIN_SESSION_NAME, userInCookie);
+                    request.getSession().setAttribute(ElfBaseAction.LOGIN_SESSION_NAME, userInCookie);
                     // cookie登录成功,执行下一个filter
                     chain.doFilter(req, rep);
                 } catch (LoginException e) {
+                	e.printStackTrace();
                     // 有cookie但登录信息不正确，转向登录页面
                     redirectToLoginPage(request, response);
                     return;
@@ -124,7 +129,7 @@ public class ElfAcFilter implements Filter {
         User user = new User();
         user.setLoginName(cookieMap.get(UserAction.KEY_LOGIN_NAME));
         user.setPassword(cookieMap.get(UserAction.KEY_PASSWORD));
-        return userBiz.login(user);
+        return userBiz.login(user,true);
     }
 
     /**

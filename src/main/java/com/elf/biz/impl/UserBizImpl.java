@@ -82,22 +82,37 @@ public class UserBizImpl implements UserBiz {
     }
 
     @Override
-    public User login(User user) throws LoginException {
+    public User login(User user, boolean pwdMd5ed) throws LoginException {
         // 缓存密码及其md5
         String password = user.getPassword();
-        String passwordMd5 = ElfTools.md5(user.getPassword());
+        //String passwordMd5 = ElfTools.md5(user.getPassword());
         // 从数据库取数据
         user = userDao.selectSingleUser(user);
         if (user == null) {
             throw new LoginException("用户名错误。");
         }
-        // 对比加密过密码
-        if (!user.getPassword().equals(passwordMd5)) {
-            throw new LoginException("密码错误。");
+        // 对比密码
+        if(pwdMd5ed && !user.getPassword().equals(password)){//加密过的密码
+        	throw new LoginException("密码错误。");
+        }else if(!pwdMd5ed && !user.getPassword().equals(ElfTools.md5(password))){//没加密过的密码
+        	throw new LoginException("密码错误。");
+        }else{
+	        // 验证通过，返回查询出来的user对象
+	        user.setPassword(password);
+	        return user;
         }
-        // 验证通过，返回查询出来的user对象
-        user.setPassword(password);
-        return user;
     }
+
+	@Override
+	public User modifyPassword(User user, String newPwd) {
+		//加密密码
+		newPwd = ElfTools.md5(newPwd);
+		user.setPassword(newPwd);
+		if(user.getStatus() == UserStatus.ORIGINAL_PASSWORD){
+			user.setStatus(UserStatus.ACTIVE);
+		}
+		//更新数据库
+		return userDao.modifyPassword(user);
+	}
 
 }

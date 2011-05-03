@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="shortcut icon" href="${application.elfMetas.blogUrl}/favicon.ico" />
-<title>$title Â· ${application.elfMetas.blogName}-ELF</title>
+<title>$title ¡¤ ${application.elfMetas.blogName}-ELF</title>
 <link href="${application.elfMetas.blogUrl}/css/default.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${application.elfMetas.blogUrl}/css/admin.css" rel="stylesheet" type="text/css" media="all" />
 <script src="${application.elfMetas.blogUrl}/js/jquery-1.4.2.min.js" type="text/javascript" language="javascript"></script>
@@ -36,12 +36,12 @@ $(function(){
 		disSideBarStatus();
 	});
 	
-	//è®¾ç½®sideBarçŠ¶æ€cookie
+	//ÉèÖÃsideBar×´Ì¬cookie
 	function setSideBarStatusCookie(cookieValue){
 		jQuery.cookie("sideBarStatusCookie",cookieValue);
 	}
 	
-	//æ¸²æŸ“sideBarçŠ¶æ€,
+	//äÖÈ¾sideBar×´Ì¬,
 	function disSideBarStatus(){
 		$(".sideBarBody li").removeClass("current");
 		var urlPath = jQuery.url.attr("path");
@@ -58,14 +58,14 @@ $(function(){
 		}
 	}
 	
-	//widgetäº¤äº’
+	//widget½»»¥
 	$(".widgetTitle")
     	.hover(function(){
 			var status = $(this).data("status");
 			if(!status || status == "opened"){
-    			$(this).children(".widgetToggle").text("æ”¶èµ·").show();
+    			$(this).children(".widgetToggle").text("ÊÕÆğ").show();
 			}else{
-				$(this).children(".widgetToggle").text("å±•å¼€").show();
+				$(this).children(".widgetToggle").text("Õ¹¿ª").show();
 			}
     	},function(){
 			$(this).children(".widgetToggle").hide();
@@ -74,19 +74,19 @@ $(function(){
 			var status = $(this).data("status");
     		if(!status || status == "opened"){
     			$(this).next(".widgetBody").slideUp(200,function(){
-					$(this).prev(".widgetTitle").children(".widgetToggle").text("å±•å¼€");
+					$(this).prev(".widgetTitle").children(".widgetToggle").text("Õ¹¿ª");
 				});
     			status = "closed";
     		}else{
     			$(this).next(".widgetBody").slideDown(200,function(){
-					$(this).prev(".widgetTitle").children(".widgetToggle").text("æ”¶èµ·");
+					$(this).prev(".widgetTitle").children(".widgetToggle").text("ÊÕÆğ");
 				});
     			status = "opened";
     		}
     		$(this).data("status",status);
 		});
 		
-	//sideBarMorePanneläº¤äº’
+	//sideBarMorePannel½»»¥
 	$(".sideBarMorePannelToggle a").click(function(){
 		var status = $(this).data("status");
 		if(!status || status == "closed"){
@@ -101,7 +101,7 @@ $(function(){
 		$(this).data("status",status).blur();
 	});
 	
-	//å¦‚æœéœ€è¦æ’å…¥è¡Œé€‰æ‹©å™¨
+	//Èç¹ûĞèÒª²åÈëĞĞÑ¡ÔñÆ÷
 	$(".elfTable.withRowSelector tr").each(function(){
 		if($(this).children("th").length > 0){
 			$(this).children("th").first().before('<th width="20"><input type="checkbox" class="elfTableRowSelector"/></th>');
@@ -109,15 +109,15 @@ $(function(){
 			$(this).children("td").first().before('<td width="20"><input type="checkbox" class="elfTableRowSelector"/></td>');
 		}
 	})
-	//elfTableéš”è¡Œå˜è‰²
+	//elfTable¸ôĞĞ±äÉ«
 	$(".elfTable tbody tr:odd").addClass("rowOdd");
-	//elfTableé¼ æ ‡ç»è¿‡è¡Œäº¤äº’
+	//elfTableÊó±ê¾­¹ıĞĞ½»»¥
 	$(".elfTable tbody tr").hover(function(){
 		$(this).addClass("rowHover").find(".tableOprator").css("visibility","visible");
 	},function(){
 		$(this).removeClass("rowHover").find(".tableOprator").css("visibility","hidden");
 	});
-	//å…¨é€‰/å…¨ä¸é€‰
+	//È«Ñ¡/È«²»Ñ¡
 	$(".elfTable th input[type=checkbox].elfTableRowSelector").change(function(){
 		$(".elfTable td input[type=checkbox].elfTableRowSelector")
 			.attr("checked",$(this).attr("checked"))
@@ -130,16 +130,16 @@ $(function(){
 			});
 			$(".elfTable th input[type=checkbox].elfTableRowSelector").attr("checked",$(this).attr("checked"));
 	});
-	//å•å‡»å¤é€‰æ¡†é€‰ä¸­è¡Œ
+	//µ¥»÷¸´Ñ¡¿òÑ¡ÖĞĞĞ
 	$(".elfTable td input[type=checkbox].elfTableRowSelector").change(function(){
 		if($(this).attr("checked")){
 			$(this).parents(".elfTable tbody tr").addClass("rowSelected");
 		}else{
 			$(this).parents(".elfTable tbody tr").removeClass("rowSelected");
 		}
-		//return false;//é˜»æ­¢äº‹ä»¶å†’æ³¡
+		//return false;//×èÖ¹ÊÂ¼şÃ°Åİ
 	});
-	//å•å‡»è¡Œé€‰ä¸­,åœ¨chromeä¸‹ä¸èƒ½é˜»æ­¢äº‹ä»¶å†’æ³¡ï¼Œæ­¤åŠŸèƒ½å…ˆå–æ¶ˆ
+	//µ¥»÷ĞĞÑ¡ÖĞ,ÔÚchromeÏÂ²»ÄÜ×èÖ¹ÊÂ¼şÃ°Åİ£¬´Ë¹¦ÄÜÏÈÈ¡Ïû
 	/*$(".elfTable tbody tr").click(function(){
 		if(!$(this).hasClass("rowSelected")){
 			$(this).addClass("rowSelected").find("input[type=checkbox].elfTableRowSelector").attr("checked",true);
@@ -148,23 +148,23 @@ $(function(){
 		}
 	});*/
 	
-	//è¡¨æ ¼æ•°æ®è¿‡æ»¤æ¡ä»¶äº¤äº’
+	//±í¸ñÊı¾İ¹ıÂËÌõ¼ş½»»¥
 	$(".elfTableFilterContent").data("status","opened");
 	$(".elfTableFilterToggle").click(function(){
 		if($(".elfTableFilterContent").data("status") == "closed"){
-			$(this).text("âˆ§ éšè—è¿‡æ»¤æ¡ä»¶").parent().find(".elfTableFilterContent").slideDown(200);
+			$(this).text("¡Ä Òş²Ø¹ıÂËÌõ¼ş").parent().find(".elfTableFilterContent").slideDown(200);
 			$(".elfTableFilterContent").data("status","opened");
 		}else{
-			$(this).text("âˆ¨ æ˜¾ç¤ºè¿‡æ»¤æ¡ä»¶").parent().find(".elfTableFilterContent").slideUp(200);
+			$(this).text("¡Å ÏÔÊ¾¹ıÂËÌõ¼ş").parent().find(".elfTableFilterContent").slideUp(200);
 			$(".elfTableFilterContent").data("status","closed");
 		}
 	});
 	
-    //å¤„ç†ä¸€èˆ¬çš„ï¼ˆstrutsä»Inputè¿”å›çš„ï¼‰é”™è¯¯ä¿¡æ¯
+    //´¦ÀíÒ»°ãµÄ£¨struts´ÓInput·µ»ØµÄ£©´íÎóĞÅÏ¢
     #if($!errorDescription.size()>0)
     	var str = "";
     	#foreach($error in $errorDescription)
-    		str += "â—  $error";
+    		str += "¡ñ  $error";
 			#if($!errorDescription.size() > $velocityCount)
 				str += "<br/>";
 			#end
@@ -173,7 +173,7 @@ $(function(){
 	#end	
 });
 
-//å¤„ç†ajaxè¿”å›çš„é”™è¯¯ä¿¡æ¯
+//´¦Àíajax·µ»ØµÄ´íÎóĞÅÏ¢
 function handleAjaxError(obj){
 	if(obj.error){
 		var str = "";
@@ -194,69 +194,73 @@ $head
 	<div class="elfWarp">
         <div class="elfHead clearfix">
             <h1 class="siteName f_l"><a href="${application.elfMetas.blogUrl}">${application.elfMetas.blogName}</a></h1>
-			<p class="f_r userInfo">æ¬¢è¿ï¼š$vu.sessionUser($session).loginName <a href="${application.elfMetas.blogUrl}/logout.jhtml">é€€å‡º</a></p>
+			<p class="f_r userInfo">
+				»¶Ó­£º
+				<a href="${application.elfMetas.blogUrl}/admin/userSettings.jhtml">$vu.sessionUser($session).loginName</a> 
+				<a href="${application.elfMetas.blogUrl}/logout.jhtml">ÍË³ö</a>
+			</p>
 		</div>
         <div class="elfBody clearfix">
 			<div class="elfSideBar">
 				<ul class="sideBarUnit">
-                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>åšå®¢ç®¡ç†</li>
+                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>²©¿Í¹ÜÀí</li>
 					<li class="sideBarBody">
                         <ul>
-							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/index.jhtml">åšå®¢ç®¡ç†</a></li>
+							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/index.jhtml">²©¿Í¹ÜÀí</a></li>
 						</ul>
 					</li>
 				</ul>
 				
 				<ul class="sideBarUnit">
-                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>æ–‡ç« </li>
+                    <li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>ÎÄÕÂ</li>
 					<li class="sideBarBody">
                         <ul>
-							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/articleList.jhtml">æ–‡ç« åˆ—è¡¨</a></li>
-							<li><a href="${application.elfMetas.blogUrl}/admin/newArticle.jhtml">å†™æ–‡ç« </a></li>
-							<li><a href="${application.elfMetas.blogUrl}/admin/categoryManager.jhtml">æ–‡ç« åˆ†ç±»</a></li>
-							<li><a href="${application.elfMetas.blogUrl}/admin/tagManager.jhtml">æ–‡ç« æ ‡ç­¾</a></li>
+							<li class="current"><a href="${application.elfMetas.blogUrl}/admin/articleList.jhtml">ÎÄÕÂÁĞ±í</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/newArticle.jhtml">Ğ´ÎÄÕÂ</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/categoryManager.jhtml">ÎÄÕÂ·ÖÀà</a></li>
+							<li><a href="${application.elfMetas.blogUrl}/admin/tagManager.jhtml">ÎÄÕÂ±êÇ©</a></li>
 						</ul>
 					</li>
-					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>åª’ä½“</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>Ã½Ìå</li>
 					<li class="sideBarBody">
                         <ul>
-							<li><a href="">åª’ä½“åº“</a></li>
-							<li><a href="">æ·»åŠ å¤šåª’ä½“æ–‡ä»¶</a></li>
+							<li><a href="">Ã½Ìå¿â</a></li>
+							<li><a href="">Ìí¼Ó¶àÃ½ÌåÎÄ¼ş</a></li>
 						</ul>
 					</li>
-					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>é¡µé¢</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>Ò³Ãæ</li>
 					<li class="sideBarBody">
                         <ul>
-							<li><a href="">é¡µé¢åˆ—è¡¨</a></li>
-							<li><a href="">æ·»åŠ é¡µé¢</a></li>
+							<li><a href="">Ò³ÃæÁĞ±í</a></li>
+							<li><a href="">Ìí¼ÓÒ³Ãæ</a></li>
 						</ul>
 					</li>
-					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>è¯„è®º</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>ÆÀÂÛ</li>
 					<li class="sideBarBody">
                         <ul>
-							<li><a href="">è¯„è®ºç®¡ç†</a></li>
+							<li><a href="">ÆÀÂÛ¹ÜÀí</a></li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="sideBarUnit">
-					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>å¤–è§‚</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>Íâ¹Û</li>
 					<li class="sideBarBody">
                         <ul>
-							<li><a href="">ä¸»é¢˜</a></li>
-							<li><a href="">å°å·¥å…·</a></li>
-							<li><a href="">èƒŒæ™¯</a></li>
-							<li><a href="">é¡¶éƒ¨å›¾ç‰‡</a></li>
+							<li><a href="">Ö÷Ìâ</a></li>
+							<li><a href="">Ğ¡¹¤¾ß</a></li>
+							<li><a href="">±³¾°</a></li>
+							<li><a href="">¶¥²¿Í¼Æ¬</a></li>
 						</ul>
 					</li>
-					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>è®¾ç½®</li>
+					<li class="sideBarTitle"><b class="sideBarTitleFlag">-</b>ÉèÖÃ</li>
 					<li class="sideBarBody">
                         <ul>
-							<li><a href="">å¸¸è§„</a></li>
-							<li><a href="">æ’°å†™</a></li>
-							<li><a href="">é˜…è¯»</a></li>
-							<li><a href="">è¯„è®º</a></li>
-							<li><a href="">åª’ä½“</a></li>
-							<li><a href="">é“¾æ¥å½¢å¼</a></li>
+							<li><a href="">³£¹æ</a></li>
+							<li><a href="">×«Ğ´</a></li>
+							<li><a href="">ÔÄ¶Á</a></li>
+							<li><a href="">ÆÀÂÛ</a></li>
+							<li><a href="">Ã½Ìå</a></li>
+							<li><a href="">Á´½ÓĞÎÊ½</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -266,8 +270,8 @@ $head
 			</div>
 		</div>
 		<div class="elfFooter clearfix">
-			<p class="f_l">æ„Ÿè°¢ä½¿ç”¨ELFè¿›è¡Œåˆ›ä½œï¼</p>
-			<p class="f_r">ä»£ç å¦‚è¯—</p>
+			<p class="f_l">¸ĞĞ»Ê¹ÓÃELF½øĞĞ´´×÷£¡</p>
+			<p class="f_r">´úÂëÈçÊ«</p>
 		</div>
 	</div>
 	

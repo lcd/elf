@@ -14,7 +14,7 @@
 	</resultMap>
 	
 	<select id="selectLoginNameCount" parameterClass="string" resultClass="int">
-		SELECT COUNT(login_name) FROM `users` WHERE `login_name` = #loginName#
+		SELECT COUNT(login_name) FROM `users` WHERE `login_name` = #loginName#;
 	</select>
 	
 	<select id="selectSingleUser" parameterClass="User" resultMap="usersResult">
@@ -25,13 +25,14 @@
 				`login_name` = #loginName#
 			</isNotNull>
 			<isNotEqual property="id" compareValue="0" prepend="AND">
-				'id' = #id#
+				`id` = #id#
 			</isNotEqual>
+		;
 	</select>
 	
 	<insert id="insert" parameterClass="User">
 		INSERT INTO `users`
-            (`ID`,
+            (`id`,
              `login_name`,
              `password`,
              `nickname`,
@@ -51,5 +52,12 @@
 			<isNotNull property="status" prepend=",">#status#</isNotNull>
 	        );
 	</insert>
+	
+	<update id="modifyPassword" parameterClass="User">
+		UPDATE `users`
+		SET `password` = #password#,
+		  `status` = #status#
+		WHERE `id` = #id#;
+	</update>
 	
 </sqlMap>

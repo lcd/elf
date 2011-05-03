@@ -4,20 +4,14 @@
  */
 package com.elf.view.www;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.security.auth.login.LoginException;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.log4j.Logger;
 
 import com.elf.biz.UserBiz;
 import com.elf.entities.User;
-import com.elf.utils.CookieUtil;
+import com.elf.utils.ElfTools;
 import com.elf.utils.Struts2Util;
 import com.elf.view.ElfBaseAction;
 import org.apache.commons.codec.binary.Base64;
@@ -27,12 +21,6 @@ import org.apache.commons.codec.binary.Base64;
  * @author laichendong
  */
 public class UserAction extends ElfBaseAction {
-
-    public static final String LOGIN_SESSION_NAME = "loginedUser"; // session中保存登录信息的句柄
-    public static final int REMEMBER_ME_EXPIRY = 2 * 7 * 24 * 60 * 60;// “记住我”的过期时间，默认为2周
-    public static final String REMEMBER_ME_COOKIE_NAME = "elfLoginCookie";// "记住我"cookie名称
-    public static final String KEY_LOGIN_NAME = "loginName";// "记住我"cookie中用户名的key
-    public static final String KEY_PASSWORD = "password";// "记住我"cookie中密码的key
 
     private static final long serialVersionUID = 7399910052889808743L;
     private static final String TARGET_AFTER_LOGIN = "targetAfterLogin";// 登录后有目的地的跳转的result Name
@@ -93,11 +81,13 @@ public class UserAction extends ElfBaseAction {
         }
         // 判断用户名密码匹配
         try {
-            user = userBiz.login(user);
+            user = userBiz.login(user, false);
         } catch (LoginException e) {
             errorDescription.add(e.getLocalizedMessage());
             return INPUT;
         }
+        //加密密码，保证session和cookie里的密码都是加密过的
+        user.setPassword(ElfTools.md5(user.getPassword()));
         // 保存登录session
         Struts2Util.getSession().setAttribute(LOGIN_SESSION_NAME, user);
         // 如果勾选了“记住我”就保存cookie
@@ -127,20 +117,6 @@ public class UserAction extends ElfBaseAction {
         // 清空session
         Struts2Util.getSession().removeAttribute(LOGIN_SESSION_NAME);
         return SUCCESS;
-    }
-
-    /**
-     * 设置登录cookie
-     * @param user
-     * @param rememberMeExpiry
-     * @param response
-     */
-    private void setLoginedCookie(User user, long rememberMeExpiry, HttpServletResponse response) {
-        Map<String, String> cookieMap = new HashMap<String, String>();
-        cookieMap.put(KEY_LOGIN_NAME, user.getLoginName());
-        cookieMap.put(KEY_PASSWORD, user.getPassword());
-        String cookieValue = JSONObject.fromObject(cookieMap).toString();
-        CookieUtil.setBase64Cookie(response, REMEMBER_ME_COOKIE_NAME, cookieValue, null, "/", REMEMBER_ME_EXPIRY);
     }
 
     /**
