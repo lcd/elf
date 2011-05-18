@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>写文章</title>
+	<script type="text/javascript" src="${application.elfMetas.blogUrl}/js/tiny_mce/tiny_mce.js"></script>
+</head>
+<body>
+<h2 class="pageTitle clearfix"><s class="icon32_10 f_l"></s><em class="f_l">写文章</em></h2>
+<form class="clearfix" action="${application.elfMetas.blogUrl}/admin/addArticle.jhtml" method="post">
+	<div class="elfContentSideBar">
+		<div class="widget publish">
+			<h4 class="widgetTitle">
+				发布<a class="widgetToggle"></a>
+			</h4>
+			<div class="widgetBody">
+				<dl>
+				#foreach($publishLevel in ${vu.enumValus("ArticlePublishLevel")})
+					<dd>
+						<label><input type="radio" name="article.publishLevel" value="$publishLevel" #if($velocityCount == 1) checked #end #if(${vu.enumConstant("ArticlePublishLevel","PRIVATE")} == $publishLevel) class="noMoreOption"#end />$publishLevel.title</label>
+					</dd>
+					#if(${vu.enumConstant("ArticlePublishLevel","PUBLISH")} == $publishLevel)
+					#elseif(${vu.enumConstant("ArticlePublishLevel","PROTECT")} == $publishLevel)
+						<dt><input type="text" name="article.accessPassword" value="" class="tooltiped tipLeft" title="请输入访问密码或使用默认密码" /></dt>
+					#elseif(${vu.enumConstant("ArticlePublishLevel","PRIVATE")} == $publishLevel)
+					#end
+				#end
+				</dl>
+				<div class="sideBarMorePannel"><label class="tooltiped tipLeft" title="勾选后这篇文章将靠前排列"><input type="checkbox" name="article.top" value="true" />置顶这篇文章到首页</label></div>
+			</div>
+		</div>
+		
+		<div class="widget">
+			<h4 class="widgetTitle">
+				评论<a class="widgetToggle"></a>
+			</h4>
+			<div class="widgetBody">
+				#foreach($commentStatus in ${vu.enumValus("CommentStatus")})
+					<p><label><input type="radio" name="article.commentStatus" value="$commentStatus" #if($velocityCount == 1) checked#end #if(${vu.enumConstant("CommentStatus","NONE")} == $commentStatus) class="noMoreOption"#end />$commentStatus.title</label></p>
+				#end
+				<div class="sideBarMorePannel">
+					<label class="tooltiped tipLeft" title="勾选后这篇文章的评论需要审核后才会显示"><input type="checkbox" name="article.commentNeedAudit" value="ture"/>评论需要作者审核</label>
+				</div>
+			</div>
+		</div>
+		<div class="widget category">
+			<h4 class="widgetTitle">
+				分类<a class="widgetToggle"></a>
+			</h4>
+			<div class="widgetBody">
+				<div class="categoryTree"></div>
+				<div class="sideBarMorePannel">
+                    <div class="sideBarMorePannelToggle"><a href="javascript:void(0);"><em class="flag">+</em>添加新类别</a></div>
+    				<div class="sideBarMorePannelContent">
+                        <p><label><input type="text" name="newCategoryName" class="input_140 tooltiped tipLeft" title="请输入新类别的名称"/></label></p>
+    					<p>
+							<select id="parentSelector" name="parentCategory" class="parentCategory tooltiped tipLeft" title="请选择父级类别">
+                            </select>
+    					</p>
+    					<p><input type="button" value="添加" id="newCategoryBtn" /></p>
+    				</div>
+				</div>
+			</div>
+		</div>
+		<div class="widget tag">
+			<h4 class="widgetTitle">
+				标签<a class="widgetToggle"></a>
+			</h4>
+			<div class="widgetBody">
+				<div>
+					<div class="selectedTags clearfix"><p>已选择的标签：</p><input type="hidden" name="tagIds" value="" /></div>
+					<div class="existTags clearfix"><p>现有的标签：</p></div>
+				</div>
+				<div class="sideBarMorePannel">
+					<div class="sideBarMorePannelToggle"><a href="javascript:void(0);"><em class="flag">+</em>添加新标签</a></div>
+                    <div class="sideBarMorePannelContent">
+						<p><input type="text" name="newTagNames" class="input_140 tooltiped tipLeft" title="多个标签用逗号(,)隔开"/></p>
+						<p><input type="button" id="newTagBtn" value="确定" /></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="elfContentMain">
+		<p class="formRow"><input type="text" name="article.title" id="articleTiltleInputer" class="tooltiped tipLeft" title="文章标题不能超过30个字" /></P>
+		<p class="formRow"><textarea name="article.content" id="article.content" style="width:100%;height:500px;"></textarea></p>
+		<p class="formRow">
+			<div class="widget">
+    			<h4 class="widgetTitle">
+    				摘要<a class="widgetToggle"></a>
+    			</h4>
+    			<div class="widgetBody">
+    				<textarea name="article.excerpt" class="articleExcerptInputer"></textarea>
+    			</div>
+    		</div>
+		</p>
+		<p class="formRow"><input type="submit" value="发布"/></p>
+	</div>
+</form>
+<script type="text/javascript" language="javascript">
+$(function(){
+	//标题输入交互
+	$(":text[name='article.title']")
+		//.width($(":text[name='article.title']").parent().width()-2)
+		.data("value","在这里输入文章标题")
+		.val($(":text[name='article.title']").data("value"))
+		.data("color",$(":text[name='article.title']").css("color"))
+		.css({"color":"#999"})
+		.focus(function(){
+			if($(this).val() == $(this).data("value")){
+				$(this).val("").css({"color":$(this).data("color")});
+			}
+		})
+		.blur(function(){
+			if(!$(this).val() || $(this).val() == $(this).data("value")){
+				$(this).val($(this).data("value")).css({"color":"#999"});
+			}
+			maxLatters(this,30);
+		})
+		.keyup(function(){
+			maxLatters(this,30);
+		});
+		
+	//控制文本框最多能输入的字符个数
+	function maxLatters(inputer, length){
+		if($(inputer).val().length > length){
+			$(inputer).val($(inputer).val().substring(0,30));
+		}
+	}
+	
+	//初始化编辑器
+	tinyMCE.init({ 
+		mode : "exact", 
+		elements : "article.content",
+		theme : "advanced", 
+		language : "zh",
+		theme_advanced_toolbar_location : "top", 
+		theme_advanced_toolbar_align : "left", 
+		theme_advanced_statusbar_location : "bottom"
+	}); 
+	
+	//发布状态交互
+	$(".publish :radio[name='article.publishLevel']").change(function(){
+		$(".publish :radio[name='article.publishLevel']").parents("dd").next("dt").slideUp(200,function(){
+			resetForm(this);
+		});
+		$(this).parents("dd").next("dt").slideDown(200);
+		//显示/隐藏更多选项
+		toggleSideBarMorePannel(this);
+	});
+	$(".publish :radio[name='article.publishLevel']:checked").parents("dd").next("dt").slideDown(200);
+	
+	//评论交互
+	$(":radio[name='article.commentStatus']").change(function(){
+		//显示/隐藏更多选项
+		toggleSideBarMorePannel(this);
+	});
+	
+	//ajax获取已有的文章分类,初始化类别区域和类别下拉框
+	jQuery.getJSON("${application.elfMetas.blogUrl}/ajax/getAllCategoryAjax.jhtml",{},function(categories){
+		//取得顶级类别
+		var topCategory;
+		jQuery.each(categories,function(){
+			if(this.parentId == -1){
+				topCategory = this;
+			}
+		});
+		//初始化
+		var tree = $('<div id="'+topCategory.id+'"><label><input type="radio" name="article.categoryId" value="'+topCategory.id+'" checked />'+topCategory.name+'</label></div>');
+		var options = '<option value="'+topCategory.id+'" name="parentCategory">'+topCategory.name+'</option>';
+		appendChildrenCategories(topCategory,1);
+		$(".category .widgetBody .categoryTree").append(tree);
+		$(".category .widgetBody .sideBarMorePannelContent select[name='parentCategory']").append(options);
+		
+		//递归方法，把子类别加到父类别下面
+    	function appendChildrenCategories(category,level){
+			var prefix = "┣";
+			for(var i=1; i<level; i++){
+				prefix += "━";
+			}
+			jQuery.each(getChildrenCategories(category),function(){
+				//树	
+				tree.find(":radio[value="+category.id+"]").parent("label")
+					.after('<div class="treeItem" id="'+this.id+'"><label><input type="radio" name="article.categoryId" value="'+this.id+'" />'+this.name+'</label></div>');
+				//下拉框
+				options += '<option value="'+this.id+'">'+prefix+this.name+'</option>';
+				var c = getChildrenCategories(this);
+				if(c.length > 0){
+					appendChildrenCategories(this,(level+1));
+				}
+			});
+    	}
+		
+		//取得某个类别的子类别
+    	function getChildrenCategories(parent){
+			var children = new Array();
+    		jQuery.each(categories,function(){
+				if(this.parentId == parent.id){
+					children.push(this);
+				}
+			});
+			return children;
+    	}
+	});
+	
+	//添加新类别
+	$("#newCategoryBtn").click(function(){
+		//获取和验证数据
+		var categoryName = $(".sideBarMorePannelContent :text[name='newCategoryName']").val();
+		if(!categoryName.match(/^[\w\u4e00-\u9fa5]{1,30}$/)){
+			ElfDialog.alert("类型名称应该由1-30个“单词字符”组成");
+			return false;
+		}
+		var parentId = $(".sideBarMorePannelContent select[name='parentCategory']").val();
+		var data = {
+			categoryName : categoryName,
+			parentId : parentId
+		}
+		//发送ajax请求
+		jQuery.getJSON("${application.elfMetas.blogUrl}/ajax/addNewCategoryAjax.jhtml",data,function(category){
+			//处理错误
+			if(!handleAjaxError(category)){
+				return false;
+			}
+			//添加到类别树
+			$(".categoryTree #"+category.parentId)
+				.append('<div class="treeItem" id="'+category.id+'"><label><input type="radio" name="article.categoryId" value="'+category.id+'" />'+category.name+'</label></div>')
+				.find("#"+category.id)
+				.hide()
+				.css("background","#FFFE98")
+				.fadeIn("slow",function(){
+					$(this).fadeOut(200,function(){
+						$(this).css("background","#fff").show();
+					})
+				});
+			//添加到下拉菜单
+			var parentOption = $("select[name='parentCategory'] option[value='"+category.parentId+"']");
+			var p = /([^\w\u4e00-\u9fa5]*)([\w\u4e00-\u9fa5]*)/;
+			var pre = p.exec(parentOption.text())[1];
+			if(!pre){
+				pre = "┣";
+			}else{
+				pre += "━";
+			}
+			parentOption.after('<option value="'+category.id+'">'+pre+category.name+'</option>');
+		});
+	});
+	
+	//ajax添加标签
+	$("#newTagBtn").click(function(){
+		//验证数据
+		var newTagNames = $("input[name='newTagNames']").val();
+		if(!newTagNames.match(/^[\w\u4e00-\u9fa5,，]{1,100}$/)){
+			ElfDialog.alert("请输入正确的标签名称。");
+			return false;
+		}
+		//发送添加请求
+		jQuery.getJSON("${application.elfMetas.blogUrl}/ajax/addNewTagsAjax.jhtml",{newTagNames:newTagNames},function(tags){
+			//验证错误
+			if(!handleAjaxError(tags)){
+				return;
+			}
+			//解析数据
+			jQuery.each(tags,function(){
+				if($(".tag .existTags #noTagTip").length > 0){
+					$(".tag .existTags #noTagTip").remove();//如果有“还未添加标签”的提示，则删除之
+				}
+				if($(".tag #selectedTag_"+this.id).length <= 0){
+					$(".selectedTags").append($('<a href="javascript:void(0);" id="selectedTag_'+this.id+'" class="selectedTag">'+this.name+'<em class="smallFlag">X</em></a>').show(200));
+				}
+			});
+			$("input[name='newTagNames']").val("");
+		});
+	});
+	
+	//ajax取得已有标签
+	jQuery.getJSON("${application.elfMetas.blogUrl}/ajax/getAllTagsAjax.jhtml",{},function(tags){
+		//验证错误
+		if(!handleAjaxError(tags)){
+			return;
+		}
+		if(jQuery.isEmptyObject(tags)){
+			$(".tag .existTags").append("<em id='noTagTip' style='color:#ccc;'>您还没有添加过标签。</em>");
+		}else{
+			jQuery.each(tags,function(){
+				$(".tag .existTags").append('<a href="javascript:void(0);" id="existTag_'+this.id+'" class="existTag">'+this.name+'<em class="smallFlag">+</em></a>');
+			});
+		}
+	});
+	
+	//已有标签交互
+	$(".tag .existTag")
+    	.live("mouseover",function(){
+    		$(this).find(".smallFlag").show();
+    	})
+		.live("mouseout",function(){
+    		$(this).find(".smallFlag").hide();
+    	})
+		.live("click",function(){
+			$(this).hide(200,function(){
+				var id = ($(this).attr("id")).substring(($(this).attr("id")).indexOf("_")+1,($(this).attr("id")).length);
+				$(this)
+					.attr("id","selectedTag_"+id)
+					.removeClass("existTag")
+					.addClass("selectedTag")
+					.find(".smallFlag").text("X").end()
+					.appendTo(".tag .selectedTags").show(200);
+				//处理id串
+				$(".tag input[name='tagIds']").val($("input[name='tagIds']").val()+","+id);
+			});
+		});
+		
+	//已选择标签交互
+	$(".tag .selectedTag")
+		.live("mouseover",function(){
+    		$(this).find(".smallFlag").show();
+    	})
+		.live("mouseout",function(){
+    		$(this).find(".smallFlag").hide();
+    	})
+		.live("click",function(){
+			var id = ($(this).attr("id")).substring(($(this).attr("id")).indexOf("_")+1,($(this).attr("id")).length);
+			$(this).hide(200,function(){
+				$(this)
+					.attr("id","existTag_"+id)
+					.removeClass("selectedTag")
+					.addClass("existTag")
+					.find(".smallFlag").text("+").end()
+					.appendTo(".tag .existTags").show(200);
+				});
+			//处理id串
+			var tagIds = $("input[name='tagIds']").val();
+			var p = new RegExp(id+",?");
+			tagIds = tagIds.replace(p,"");
+			$("input[name='tagIds']").val(tagIds);
+		});
+	
+	//显示、隐藏SideBarMorePannel
+	function toggleSideBarMorePannel(obj){
+		if($(obj).hasClass("noMoreOption")){
+			$(obj).parents(".widgetBody").find(".sideBarMorePannel").slideUp(200,function(){
+				resetForm(this);
+			});
+		}else{
+			$(obj).parents(".widgetBody").find(".sideBarMorePannel").slideDown(200);
+		}
+	}
+	//重置指定容器内的表单元素
+	function resetForm(obj){
+		$(obj).find(":text,:password").val("").end()
+    		  .find(":checkbox,:radio").attr("checked",false);
+	}
+		
+});
+
+</script>
+</body>
+</html>

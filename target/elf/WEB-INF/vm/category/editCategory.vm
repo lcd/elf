@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>文章分类</title>
+</head>
+<body>
+<h2 class="pageTitle clearfix"><s class="icon32_6 f_l"></s><em class="f_l">文章分类</em></h2>
+<div class="clearfix">
+	<div>
+		<form id="addCategoryForm" action="${application.elfMetas.blogUrl}/admin/doEditCategory.jhtml" method="post">
+			<input type="hidden" name="structure.id" value="$!structure.id" />
+			<div class="widget">
+    			<h4 class="widgetTitle">
+    				编辑类别<a class="widgetToggle"></a>
+    			</h4>
+    			<div class="widgetBody">
+                    <p><label>
+						名称：<br/>
+						<input type="text" name="structure.name" value="$!structure.name" class="input_90percent"/>
+						<em class="formLongTip">类别名称是博客中显示的分类名称，长度不能超过15个字。</em>
+					</label></p>
+					<p><label>
+						别名：<br/>
+						<input type="text" name="structure.alias" value="$!structure.alias" class="input_90percent"/>
+						<em class="formLongTip">类别别名将用于url中。请选择有意义的单词做别名。可以提高搜索引擎友好度。长度不能超过20个字符</em>
+					</label></p>
+					#if($!structure.parentId == -1)
+						<input type="hidden" value="$!structure.parentId" name="structure.parentId" />
+					#else
+                        <p><label>
+    						父级：<br/>
+    						<select id="parentSelector" class="parentSelector" name="structure.parentId" parentId="$!structure.parentId" categoryid="$!structure.id"></select>
+    						<em class="formLongTip">请选择父级类别，通过这个，你可以建立复杂类别层级关系。</em>
+    					</label></p>
+					#end
+					<p><label>
+						描述：<br/>
+						<textarea name="structure.description" class="structureDescInputer">$!structure.description</textarea>
+						<em class="formLongTip">标签的描述一般情况下不会显示在前台，您可以把它当做一个留给自己看的备注。</em>
+					</label></p>
+					<p>
+						#if($!structure)
+							<input type="submit" value="保存"/>
+						#else
+							<input type="button" id="backToManagerBtn" value="<< 返回类别管理"/>
+						#end
+					</p>
+    			</div>
+    		</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript" language="javascript">
+$(function(){
+initParentSelector();
+
+//初始化父级选择下拉列表函数
+function initParentSelector(){
+	jQuery.getJSON("${application.elfMetas.blogUrl}/ajax/getAllCategoryAjax.jhtml",{},function(categories){
+		//取得顶级类别
+		var topCategory;
+		jQuery.each(categories,function(){
+			if(this.parentId == -1){
+				topCategory = this;
+			}
+		});
+		//初始化
+		var options = '<option value="'+topCategory.id+'">'+topCategory.name+'</option>';
+		appendChildrenCategories(topCategory,1);
+		$("#parentSelector").empty().append(options);
+		//选中父级类别
+        var parentid = $("#parentSelector").attr("parentid");
+        $("#parentSelector option[value='"+parentid+"']").attr("selected", true);
+		//移除自己及自己的子孙节点，避免“乱伦”
+		var categoryid = $("#parentSelector").attr("categoryid");
+		if(categoryid){
+    		$("#parentSelector option[value='"+categoryid+"']").remove();
+    		var self;
+    		jQuery.each(categories,function(){
+    			if(this.id == categoryid){
+    				self = this;
+    			}
+    		});
+    		jQuery.each(getChildrenCategories(self),function(){
+    			$("#parentSelector option[value='"+this.id+"']").remove();
+    		});
+		}
+		
+		//递归方法，把子类别加到父类别下面
+    	function appendChildrenCategories(category,level){
+			var prefix = "┣";
+			for(var i=1; i<level; i++){
+				prefix += "━";
+			}
+			jQuery.each(getChildrenCategories(category),function(){
+				//下拉框
+				options += '<option value="'+this.id+'">'+prefix+this.name+'</option>';
+				var c = getChildrenCategories(this);
+				if(c.length > 0){
+					appendChildrenCategories(this,(level+1));
+				}
+			});
+    	}
+		
+		//取得某个类别的子类别
+    	function getChildrenCategories(parent){
+			var children = new Array();
+    		jQuery.each(categories,function(){
+				if(this.parentId == parent.id){
+					children.push(this);
+				}
+			});
+			return children;
+    	}
+	});
+}
+
+//添加类别表单验证
+$("#addCategoryForm").submit(function(){
+	if(!$("input[name='structure.name']").val().match(/^[\w\u4e00-\u9fa5]{1,15}$/)){
+		tipFormError($("input[name='structure.name']"),"类别名称应该由1到15个中文或单词字符组成。");
+		return false;
+	}
+	if(!$("input[name='structure.alias']").val().match(/^\w{0,20}$/)){
+		tipFormError($("input[name='structure.alias']"),"类别别名不能超过20个字符，且只能由英文字母组成。");
+		return false;
+	}
+	if(!$("textarea[name='structure.description']").val().match(/^[\w\u4e00-\u9fa5]{0,500}$/)){
+		tipFormError($("textarea[name='structure.description']"),"类别描述不能超过500个字。");
+		return false;
+	}
+	return true;
+});
+
+//显示表单验证错误视觉效果
+function tipFormError(formFieldObj, errorMessage){
+	cleanFormError(formFieldObj);
+	formFieldObj.parents("p").addClass("formHighLight").end().after('<em class="formErrorTip">'+errorMessage+'</em>');
+	formFieldObj
+		.focus(function(){
+			return true;
+		})
+		.one("click",function(){
+			cleanFormError($(this));
+		});
+}
+//清除表单验证错误视觉效果 
+function cleanFormError(formFieldObj){
+	formFieldObj.parents("p").removeClass("formHighLight").find(".formErrorTip").remove();
+}
+
+//点击返回类别管理页面
+$("#backToManagerBtn").click(function(){
+	window.top.location = "${application.elfMetas.blogUrl}/admin/categoryManager.jhtml";
+});
+
+});
+</script>
+</body>
+</html>

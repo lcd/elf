@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<constant name="struts.action.extension" value="jhtml" />
+    <constant name="struts.devMode" value="true" />
+    <constant name="struts.configuration.xml.reload" value="true" />
+    
+    <!-- 前台请求 -->
+    <package name="www" extends="struts-default" namespace="/">
+    	<global-results>
+    		<result name="error" type="velocity">/themes/default/500.vm</result>
+    	</global-results>
+    	<!-- 注册页面 -->
+    	<action name="register" class="com.elf.view.www.UserAction" method="register">
+    		<result name="success" type="velocity">/themes/default/register.vm</result>
+    	</action>
+    	<!-- 执行注册动作 -->
+    	<action name="doRegister" class="com.elf.view.www.UserAction" method="doRegister">
+    		<result name="success" type="velocity">/themes/default/registerSuccess.vm</result>
+    		<result name="input" type="velocity">/themes/default/register.vm</result>
+    	</action>
+    	<!-- 登录页面 -->
+    	<action name="login" class="com.elf.view.www.UserAction" method="login">
+    		<result name="success" type="velocity">/themes/default/login.vm</result>
+    	</action>
+    	<!-- 执行登录 -->
+    	<action name="doLogin" class="com.elf.view.www.UserAction" method="doLogin">
+    		<result name="success" type="redirect">/admin/index.jhtml</result>
+    		<result name="input" type="velocity">/themes/default/login.vm</result>
+    		<result name="targetAfterLogin" type="redirect">${u}</result>
+    	</action>
+    	<!-- 退出 -->
+    	<action name="logout" class="com.elf.view.www.UserAction" method="logout">
+    		<result name="success" type="redirect">/</result>
+    	</action>
+    	<!-- 不支持IE的提示页面 -->
+    	<action name="noIE" class="com.elf.view.www.UserAction" method="noIE">
+    		<result name="success" type="velocity">/WEB-INF/vm/noIE.vm</result>
+    	</action>
+    </package>
+    
+    <!-- 后台请求 -->
+    <package name="admin" namespace="/admin" extends="struts-default">
+    	<!-- blog管理首页 -->
+    	<action name="index" class="com.elf.view.admin.IndexAction" method="index">
+    		<result name="success" type="velocity">/WEB-INF/vm/index.vm</result>
+    	</action>
+    	<!-- 添加文章页面 -->
+    	<action name="newArticle" class="com.elf.view.admin.ArticleAction" method="newArticle">
+    		<result name="success" type="velocity">/WEB-INF/vm/article/newArticle.vm</result>
+    	</action>
+    	<!-- 添加文章 -->
+    	<action name="addArticle" class="com.elf.view.admin.ArticleAction" method="addArticle" >
+    		<result name="success" type="redirect">/admin/newArticle.jhtml</result>
+    	</action>
+    	<!-- 文章列表页面 -->
+    	<action name="articleList" class="com.elf.view.admin.ArticleAction" method="articleList">
+    		<result name="success" type="velocity">/WEB-INF/vm/article/articleList.vm</result>
+    	</action>
+    	<!-- 类别管理页面 -->
+    	<action name="categoryManager" class="com.elf.view.admin.StructureAction" method="categoryManager">
+    		<result name="success" type="velocity">/WEB-INF/vm/category/categoryManager.vm</result>
+    	</action>
+    	<!-- 添加类别 -->
+    	<action name="addCategory" class="com.elf.view.admin.StructureAction" method="addCategory">
+    		<result name="success" type="redirect">/admin/categoryManager.jhtml</result>
+    		<result name="input" type="velocity">/WEB-INF/vm/category/categoryManager.vm</result>
+    	</action>
+    	<!-- 编辑类别页面 -->
+    	<action name="editCategory" class="com.elf.view.admin.StructureAction" method="editCategory">
+    		<result name="success" type="velocity">/WEB-INF/vm/category/editCategory.vm</result>
+    	</action>
+    	<!-- 编辑类别 -->
+    	<action name="doEditCategory" class="com.elf.view.admin.StructureAction" method="doEditCategory">
+			<result name="success" type="redirect">/admin/categoryManager.jhtml</result>
+			<result name="input" type="velocity">/WEB-INF/vm/category/editCategory.vm</result>    	
+    	</action>
+    	<!-- 标签管理页面 -->
+    	<action name="tagManager" class="com.elf.view.admin.StructureAction" method="tagManager">
+    		<result name="success" type="velocity">/WEB-INF/vm/tag/tagManager.vm</result>
+    	</action>
+    	<!-- 添加标签 -->
+    	<action name="addTag" class="com.elf.view.admin.StructureAction" method="addTag">
+    		<result name="success" type="redirect">/admin/tagManager.jhtml</result>
+    		<result name="input" type="velocity">/WEB-INF/vm/tag/tagManager.vm</result>
+    	</action>
+    	<!-- 用户设置中心页面 -->
+    	<action name="userSettings" class="com.elf.view.admin.UserAction" method="userSettings">
+    		<result name="success" type="velocity">/WEB-INF/vm/user/userSettings.vm</result>
+    	</action>
+    	<!-- 修改密码 -->
+    	<action name="modifyPassword" class="com.elf.view.admin.UserAction" method="modifyPassword">
+    		<result name="input" type="redirect">/admin/userSettings.jhtml</result>
+    		<result name="success" type="redirect">/admin/userSettings.jhtml</result>
+    	</action>
+    </package>
+    
+    <!-- ajax请求 -->
+    <package name="ajax" namespace="/ajax" extends="struts-default">
+    	<!-- 获取文章类别树html -->
+    	<action name="getAllCategoryAjax" class="com.elf.view.admin.ArticleAction" method="getAllCategoryAjax" />
+    	<!-- 添加文章类别 -->
+    	<action name="addNewCategoryAjax" class="com.elf.view.admin.ArticleAction" method="addNewCategoryAjax" />
+    	<!-- 添加标签 -->
+    	<action name="addNewTagsAjax" class="com.elf.view.admin.ArticleAction" method="addNewTagsAjax" />
+    	<!-- 获取所有标签 -->
+    	<action name="getAllTagsAjax" class="com.elf.view.admin.ArticleAction" method="getAllTagsAjax" />
+    	<!-- 删除类别 -->
+    	<action name="delCategoryAjax" class="com.elf.view.admin.StructureAction" method="delCategoryAjax" />
+    	<!-- 批量删除类别 -->
+    	<action name="batchDelelteCategories" class="com.elf.view.admin.StructureAction" method="batchDelelteCategories" />
+    </package>
+    
+    
+</struts>

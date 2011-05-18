@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>用户设置</title>
+</head>
+<body>
+<h2 class="pageTitle clearfix"><s class="icon32_6 f_l"></s><em class="f_l">用户设置</em></h2>
+<div class="clearfix">
+	<div class="f_l elfContent2Col">
+		<div class="widget">
+			<h4 class="widgetTitle">
+				基本信息<a href="javascript:void(0);" class="widgetToggle"></a>
+			</h4>
+			<div class="widgetBody">
+            </div>	
+		</div>
+	</div>
+	<div class="f_r elfContent2Col">
+		<div class="widget">
+    		<h4 class="widgetTitle">
+    			密码修改<a href="javascript:void(0);" class="widgetToggle"></a>
+    		</h4>
+    		<div class="widgetBody">
+				<form id="modifyPasswordForm" action="${application.elfMetas.blogUrl}/admin/modifyPassword.jhtml" method="post">
+                    <p class="formRow"><label>旧密码：<br/><input type="text" name="password" class="input_90percent" /></label></p>
+					<p class="formRow"><label>新密码：<br/><input type="password" name="newPassword" class="input_90percent" /></label></p>
+					<p class="formRow"><label>确认密码：<br/><input type="password" name="confirmPassword" class="input_90percent" /></label></p>
+					<p class="formRow"><input type="submit" value="修改密码" /></p>
+				</form>
+            </div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+//修改密码表单验证
+$("#modifyPasswordForm").submit(function(){
+	if(!jQuery.trim($(":text[name='password']").val())){
+		ElfDialog.alert("知道旧的才能换新的。");
+		return false;
+	}
+	if(!jQuery.trim($(":password[name='newPassword']").val()).match(/^[\w\u0021-\u002f]{6,32}$/)){
+		ElfDialog.alert("你要改成什么啊？");
+		return false;
+	}
+});
+</script>
+
+</body>
+</html>

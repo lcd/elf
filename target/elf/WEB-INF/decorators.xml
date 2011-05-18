@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sitemesh >
+
+<decorators defaultdir="/WEB-INF/vm/decorators">
+    <excludes>
+		<pattern></pattern>
+	</excludes>
+    
+    <decorator name="encodetDecorator" page="encodeDecorator.vm">
+		<pattern>/*</pattern>
+    </decorator>
+    <decorator name="defaultDecorator" page="defaultDecorator.vm">
+		<pattern>/admin/*</pattern>
+    </decorator>
+	
+</decorators>
