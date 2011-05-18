@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -6,4 +7,14 @@
 <body>
 		后台首页
 </body>
+=======
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>后台首页</title>
+</head>
+<body>
+		后台首页
+</body>
+>>>>>>> c5dd20a1ddcf3a1242761d65546b427a783df6c6
 </html>

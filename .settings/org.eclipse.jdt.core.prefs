@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 #Thu May 19 00:10:00 CST 2011
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
 org.eclipse.jdt.core.compiler.compliance=1.6
 org.eclipse.jdt.core.compiler.problem.forbiddenReference=warning
 org.eclipse.jdt.core.compiler.source=1.6
+=======
+#Sun May 15 16:03:34 CST 2011
+org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.source=1.6
+org.eclipse.jdt.core.compiler.compliance=1.6
+>>>>>>> c5dd20a1ddcf3a1242761d65546b427a783df6c6

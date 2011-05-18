@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -26,4 +27,34 @@
 		$velocityCount、$error<br />
 	#end
 </body>
+=======
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>登录到"${application.elfMetas.blogName}"</title>
+<script type="text/javascript" language="javascript">
+	$("#elfLoginForm").submit(function(){
+		if($.browser.msie){
+			$(this).append("<input type="hidden" name="isMSIE" value="true"/>")
+		}
+		return true;
+	});
+</script>
+</head>
+<body>
+	<div>
+		<form id="elfLoginForm" action="${application.elfMetas.blogUrl}/doLogin.jhtml" method="post">
+			<input type="hidden" name="u" value="$u"/>
+            <p><label>用户名：<input type="text" name="user.loginName" /></label></p>
+			<p><label>密码：<input type="password" name="user.password" /></label></p>
+            <p><label><input type="checkbox" name="rememberMe" value="true" />两周内免登陆</label></p>
+            <p><input type="submit" value="登录"/></p>
+		</form>
+	</div>
+	#foreach($error in $errorDescription)
+		$velocityCount、$error<br />
+	#end
+</body>
+>>>>>>> c5dd20a1ddcf3a1242761d65546b427a783df6c6
 </html>
